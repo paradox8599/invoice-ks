@@ -9,10 +9,10 @@ KS_PORT=3000
 
 # sqlite | mysql | postgresql
 DB_PROVIDER="postgresql"
-DATABASE_URL="postgresql://nextks:nextks@localhost:5432/nextks"
+DATABASE_URL="postgresql://invoiceks:invoiceks@localhost:5432/invoiceks"
 
 # Cloudflare R2 / AWS S3
-AWS_BUCKET="nextks"
+AWS_BUCKET="invoiceks"
 AWS_ENDPOINT_URL=""
 AWS_CUSTOM_URL=""
 AWS_ACCESS_KEY_ID=""
