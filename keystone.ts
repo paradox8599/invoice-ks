@@ -12,6 +12,7 @@ import {
 import { type Context } from ".keystone/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { serviceItemDuplicateAPI } from "./admin/routes/service-item/duplicate";
+import { serviceDuplicateAPI } from "./admin/routes/service/duplicate";
 
 function withContext<
   F extends (
@@ -34,6 +35,10 @@ export default withAuth(
         app.post(
           "/api/service-item/duplicate",
           withContext(context, serviceItemDuplicateAPI),
+        );
+        app.post(
+          "/api/service/duplicate",
+          withContext(context, serviceDuplicateAPI),
         );
       },
     },

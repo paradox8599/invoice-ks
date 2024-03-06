@@ -39,9 +39,9 @@ export const ServiceItem: Lists.ServiceItem = list({
     },
   },
   fields: {
-    service: relationship({
+    services: relationship({
       ref: "Service.items",
-      many: false,
+      many: true,
       ui: {
         itemView: { fieldMode: "hidden" },
         createView: { fieldMode: "hidden" },
@@ -90,6 +90,17 @@ export const ServiceItem: Lists.ServiceItem = list({
           const unitPrice = item.unitPrice.toNumber();
           const qty = item.qty.toNumber();
           return unitPrice * qty * 100;
+        },
+      }),
+    }),
+    refCount: virtual({
+      ui: { itemView: { fieldMode: "read", fieldPosition: "sidebar" } },
+      field: graphql.field({
+        type: graphql.Int,
+        resolve: async (item, _args, context) => {
+          return await context.sudo().query.Service.count({
+            where: { items: { some: { id: { equals: item.id } } } },
+          });
         },
       }),
     }),

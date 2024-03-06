@@ -6,6 +6,21 @@ import { createdAtField, updatedAtField } from "../helpers/fields";
 
 export const Service: Lists.Service = list({
   access: allowAll,
+  hooks: {
+    beforeOperation: {
+      delete: async ({ item, context }) => {
+        // when deleting service, also delete items that are only connected to this service
+        const items = (await context.sudo().query.ServiceItem.findMany({
+          where: { services: { every: { id: { equals: item.id } } } },
+          query: "id",
+        })) as { id: string }[];
+        if (items.length === 0) return;
+        await context.sudo().query.ServiceItem.deleteMany({
+          where: items,
+        });
+      },
+    },
+  },
   fields: {
     label: virtual({
       field: graphql.field({
@@ -15,14 +30,14 @@ export const Service: Lists.Service = list({
             where: { id: item.id },
             query: "totalAmount createdAt",
           })) as { totalAmount: string; createdAt: string };
-          return `[${new Date(s.createdAt).toLocaleDateString()}] ${item.name} - ${s.totalAmount}`;
+          return `[${new Date(s?.createdAt ?? 0).toLocaleDateString()}] ${item.name} - ${s?.totalAmount}`;
         },
       }),
     }),
     name: text({}),
     description: text({}),
     items: relationship({
-      ref: "ServiceItem.service",
+      ref: "ServiceItem.services",
       many: true,
       ui: {
         displayMode: "cards",
@@ -49,7 +64,7 @@ export const Service: Lists.Service = list({
         type: graphql.Int,
         resolve: async (item, _args, context) => {
           const items = (await context.sudo().query.ServiceItem.findMany({
-            where: { service: { id: { equals: item.id } } },
+            where: { services: { some: { id: { equals: item.id } } } },
             query: "totalCents",
           })) as { totalCents: number }[];
           return items.reduce((a, b) => a + b.totalCents, 0);
@@ -90,6 +105,13 @@ export const Service: Lists.Service = list({
       ui: {
         createView: { fieldMode: "hidden" },
         itemView: { fieldMode: "read" },
+      },
+    }),
+    actions: json({
+      ui: {
+        createView: { fieldMode: "hidden" },
+        itemView: { fieldPosition: "sidebar" },
+        views: "./admin/views/service-actions",
       },
     }),
     createdAt: createdAtField(),

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { type Context } from ".keystone/types";
 
-export async function serviceItemDuplicateAPI(
+export async function serviceDuplicateAPI(
   req: NextApiRequest,
   res: NextApiResponse,
   context: Context,
@@ -13,30 +13,26 @@ export async function serviceItemDuplicateAPI(
     return res.status(400).json({ error: "Expected id string" });
   }
   try {
-    const item = await context.sudo().query.ServiceItem.findOne({
+    const item = (await context.sudo().query.Service.findOne({
       where: { id: req.query.id },
-      query: "name qty type { id } period service { id } unitPrice description",
-    });
+      query: "name description items { id }",
+    })) as { name: string; description: string; items: { id: string }[] };
     if (!item) {
       return res
         .status(404)
-        .json({ error: `Service item ${req.query.id} not found` });
+        .json({ error: `Service ${req.query.id} not found` });
     }
-    const newItem = await context.sudo().query.ServiceItem.createOne({
+    const newItem = await context.sudo().query.Service.createOne({
       data: {
         name: `${item.name} - Duplicated`,
-        qty: item.qty,
-        type: { connect: { id: item.type.id } },
-        period: item.period,
-        services: { connect: { id: item.service.id } },
-        unitPrice: item.unitPrice,
         description: item.description,
+        items: { connect: item.items.map((i) => ({ id: i.id })) },
       },
       query: "id",
     });
     res.status(201).json({ data: { id: newItem.id } });
   } catch (e) {
-    console.log("[serviceItemDuplicateAPI]", e);
+    console.log("[serviceDuplicateAPI]", e);
     res.status(418).json({ error: e });
   }
 }
