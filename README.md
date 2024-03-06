@@ -6,10 +6,12 @@ create `.env` file for development:
 
 ```sh
 KS_PORT=3000
+# random 32 char string
+SESSION_SECRET=
 
 # sqlite | mysql | postgresql
 DB_PROVIDER="postgresql"
-DATABASE_URL="postgresql://invoiceks:invoiceks@localhost:5432/invoiceks"
+DATABASE_URL="postgresql://invoiceks:invoiceks@localhost:5437/invoiceks"
 
 # Cloudflare R2 / AWS S3
 AWS_BUCKET="invoiceks"

@@ -18,9 +18,9 @@ export const User: Lists.User = list({
     password: password({ validation: { isRequired: true } }),
     role: select({
       type: "integer",
-      defaultValue: Role.None,
+      defaultValue: Role.User,
       options: Object.keys(Role)
-        .filter((v) => Number.isNaN(Number(v)))
+        .filter((v) => Number.isNaN(Number(v)) && !["None", "All"].includes(v))
         .map((key) => ({
           label: key,
           value: Role[key as RoleName],

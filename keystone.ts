@@ -9,9 +9,9 @@ import {
   GRAPHQL_PATH,
   KS_PORT,
 } from "./src/lib/variables";
-import { Role } from "./src/lib/types/auth";
 import { type Context } from ".keystone/types";
 import { NextApiRequest, NextApiResponse } from "next";
+import { serviceItemDuplicateAPI } from "./admin/routes/service-item/duplicate";
 
 function withContext<
   F extends (
@@ -31,17 +31,16 @@ export default withAuth(
     server: {
       port: KS_PORT,
       extendExpressApp(app, context) {
-        app.get(
-          "/api/example",
-          withContext(context, (_req, res, _context) =>
-            res.json({ hello: "world" }),
-          ),
+        app.post(
+          "/api/service-item/duplicate",
+          withContext(context, serviceItemDuplicateAPI),
         );
       },
     },
     ui: {
+      publicPages: ["/r"],
       // fix: AdminMeta access denied when login to admin ui
-      isAccessAllowed: (ctx) => ctx.session?.data?.role === Role.Admin,
+      isAccessAllowed: (ctx) => ctx.session,
     },
     db: {
       provider: DB_PROVIDER,

@@ -15,8 +15,7 @@ RUN npm ci --ignore-scripts \
     && npm prune --production \
     && rm -rf /root/.npm \
     && chown -R node:node /app \
-    && chmod +x run.sh \
-    && echo "done"
+    && chmod +x run.sh
 
 # remove this if do not backup, (also change run.sh)
 RUN apk add --no-cache aws-cli postgresql-client
