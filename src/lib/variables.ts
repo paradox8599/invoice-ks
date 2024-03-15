@@ -19,7 +19,7 @@ export const DATABASE_URL = process.env.DATABASE_URL || "file://keystone.db";
 
 // KeystoneJS & GraphQL Server
 export const SERVER_URL = new URL(
-  process.env.NEXT_PUBLIC_SERVER_URL ?? "http://locahost:3000",
+  process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:3000",
 );
 
 export const GRAPHQL_PATH =

@@ -4,13 +4,36 @@ import { allowAll } from "@keystone-6/core/access";
 import {
   json,
   relationship,
+  text,
   timestamp,
   virtual,
 } from "@keystone-6/core/fields";
 import { createdAtField, updatedAtField } from "../helpers/fields";
+import moment from "moment";
 
 export const Quote: Lists.Quote = list({
   access: allowAll,
+  hooks: {
+    resolveInput: async ({ operation, context, resolvedData }) => {
+      if (operation === "create") {
+        const dt = new Date();
+        dt.setHours(0, 0, 0, 0);
+        const quotesToday = (await context.sudo().query.Quote.findMany({
+          where: { createdAt: { gt: dt } },
+          orderBy: { number: "desc" },
+          query: "number",
+        })) as unknown as { number: string }[];
+        console.log(JSON.stringify(quotesToday));
+        const quoteNumber = parseInt(quotesToday?.[0]?.number ?? "0") + 1;
+        console.log("quote number", quoteNumber);
+        return {
+          ...resolvedData,
+          number: quoteNumber.toString(),
+        };
+      }
+      return resolvedData;
+    },
+  },
   fields: {
     // service name as label
     label: virtual({
@@ -23,6 +46,19 @@ export const Quote: Lists.Quote = list({
           })) as { service: { name: string } };
           return quote.service.name;
         },
+      }),
+    }),
+    number: text({
+      ui: {
+        createView: { fieldMode: "hidden" },
+        itemView: { fieldMode: "hidden" },
+      },
+    }),
+    quoteNumber: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve: (item) =>
+          `${moment(item.createdAt).format("YYYYMMDD")}${item.number.padStart(3, "0")}`,
       }),
     }),
     client: relationship({

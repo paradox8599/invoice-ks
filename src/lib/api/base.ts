@@ -2,7 +2,7 @@ import useSWR from "swr";
 import { GRAPHQL_ENDPOINT } from "../variables";
 import { Obj } from "../types/helpers";
 
-export async function graphql({
+export async function graphql<T>({
   query,
   variables = {},
   url = GRAPHQL_ENDPOINT,
@@ -10,12 +10,12 @@ export async function graphql({
   query: string;
   variables?: Obj;
   url?: URL;
-}): Promise<Obj> {
+}): Promise<T> {
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      query: query.replace(/(\r\n|\n|\r|\t)/gm, " ").replace(/  +/g, " "),
+      query: query.replace(/(\r\n|\n|\r|\t)/gm, " ").replace(/ +/g, " "),
       variables,
     }),
   });
@@ -25,7 +25,7 @@ export async function graphql({
   return res;
 }
 
-export function useGraphql({
+export function useGraphql<T>({
   query,
   variables,
   url,
@@ -34,5 +34,7 @@ export function useGraphql({
   variables?: Obj;
   url?: URL;
 }) {
-  return useSWR([query, variables], () => graphql({ query, variables, url }));
+  return useSWR<T>([query, variables], () =>
+    graphql<T>({ query, variables, url }),
+  );
 }

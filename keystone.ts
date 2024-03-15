@@ -13,6 +13,7 @@ import { type Context } from ".keystone/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import { serviceItemDuplicateAPI } from "./admin/routes/service-item/duplicate";
 import { serviceDuplicateAPI } from "./admin/routes/service/duplicate";
+import { pdfAPI } from "./admin/routes/pdf";
 
 function withContext<
   F extends (
@@ -32,6 +33,7 @@ export default withAuth(
     server: {
       port: KS_PORT,
       extendExpressApp(app, context) {
+        app.get("/pdf", withContext(context, pdfAPI));
         app.post(
           "/api/service-item/duplicate",
           withContext(context, serviceItemDuplicateAPI),
@@ -43,9 +45,11 @@ export default withAuth(
       },
     },
     ui: {
-      publicPages: ["/r"],
+      publicPages: ["/pdf/quote", "/view/quote"],
       // fix: AdminMeta access denied when login to admin ui
-      isAccessAllowed: (ctx) => ctx.session,
+      isAccessAllowed: (ctx) => {
+        return ctx.session;
+      },
     },
     db: {
       provider: DB_PROVIDER,
