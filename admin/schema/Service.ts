@@ -40,21 +40,21 @@ export const Service: Lists.Service = list({
       ref: "ServiceItem.services",
       many: true,
       ui: {
-        displayMode: "cards",
-        cardFields: [
-          "type",
-          "period",
-          "name",
-          "description",
-          "qty",
-          "unitPrice",
-        ],
-        inlineCreate: {
-          fields: ["name", "type", "period", "description", "qty", "unitPrice"],
-        },
-        inlineEdit: {
-          fields: ["name", "type", "period", "description", "qty", "unitPrice"],
-        },
+        // displayMode: "cards",
+        // cardFields: [
+        //   "type",
+        //   "period",
+        //   "name",
+        //   "description",
+        //   "qty",
+        //   "unitPrice",
+        // ],
+        // inlineCreate: {
+        //   fields: ["name", "type", "period", "description", "qty", "unitPrice"],
+        // },
+        // inlineEdit: {
+        //   fields: ["name", "type", "period", "description", "qty", "unitPrice"],
+        // },
         // inlineConnect: true,
       },
     }),

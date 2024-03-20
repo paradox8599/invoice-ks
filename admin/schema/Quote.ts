@@ -15,6 +15,7 @@ export const Quote: Lists.Quote = list({
   access: allowAll,
   hooks: {
     resolveInput: async ({ operation, context, resolvedData }) => {
+      // calculate quote number
       if (operation === "create") {
         const dt = new Date();
         dt.setHours(0, 0, 0, 0);
@@ -23,9 +24,7 @@ export const Quote: Lists.Quote = list({
           orderBy: { number: "desc" },
           query: "number",
         })) as unknown as { number: string }[];
-        console.log(JSON.stringify(quotesToday));
         const quoteNumber = parseInt(quotesToday?.[0]?.number ?? "0") + 1;
-        console.log("quote number", quoteNumber);
         return {
           ...resolvedData,
           number: quoteNumber.toString(),

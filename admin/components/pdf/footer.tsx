@@ -1,18 +1,22 @@
+import { INFO } from "../../../src/lib/variables";
 import { VALUES } from "../values";
+import React from "react";
 
 export default function Footer() {
   return (
     <div
       style={{
+        WebkitPrintColorAdjust: "exact",
         position: "fixed",
         bottom: 0,
         left: 0,
         right: 0,
         background: VALUES.colors.bg,
-        padding: "0.1rem 1rem",
+        height: "16px",
+        padding: "0 25px",
         color: "white",
         fontWeight: "bold",
-        fontSize: "0.65rem",
+        fontSize: "14px",
         display: "flex",
         justifyContent: "space-between",
       }}
@@ -24,25 +28,27 @@ export default function Footer() {
           textAlign: "start",
         }}
       >
-        03 6169 5503
+        {INFO.phone}
       </div>
       <div
         style={{
           flexBasis: 0,
           flexGrow: 1,
           textAlign: "center",
+          marginRight: "20px",
         }}
       >
-        info@my-it.com.au
+        {INFO.email}
       </div>
       <div
         style={{
           flexBasis: 0,
           flexGrow: 1,
           textAlign: "end",
+          fontSize: "12px",
         }}
       >
-        Room 5, Bank Arcade, 64-68 Liverpool St
+        {INFO.address1}
       </div>
     </div>
   );

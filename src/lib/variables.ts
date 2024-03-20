@@ -34,3 +34,11 @@ export const BUCKET = {
   endpointUrl: process.env.AWS_ENDPOINT_URL,
   customUrl: process.env.AWS_CUSTOM_URL,
 };
+
+export const INFO = {
+  name: process.env.NEXT_PUBLIC_INFO_NAME ?? "",
+  phone: process.env.NEXT_PUBLIC_INFO_PHONE ?? "",
+  address1: process.env.NEXT_PUBLIC_INFO_ADDRESS_1 ?? "",
+  address2: process.env.NEXT_PUBLIC_INFO_ADDRESS_2 ?? "",
+  email: process.env.NEXT_PUBLIC_INFO_EMAIL ?? "",
+};

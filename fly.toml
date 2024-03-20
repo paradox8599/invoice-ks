@@ -1,6 +1,3 @@
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
 app = "invoiceks"
 primary_region = "syd"
 swap_size_mb = 256
@@ -10,8 +7,11 @@ dockerfile = "Dockerfile.admin"
 
 [build.args]
 DB_PROVIDER = "postgresql"
+# fly deploy --build-secret NAME=VALUE
+# fly deploy --build-arg NAME=VALUE
 
 [env]
+# see README for a complete list
 KS_PORT = "3000"
 NEXT_PUBLIC_GRAPHQL_PATH = "/api/graphql"
 NEXT_PUBLIC_SERVER_URL = "https://invoiceks.fly.dev"

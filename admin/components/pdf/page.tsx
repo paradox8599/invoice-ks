@@ -1,5 +1,4 @@
 import { CSSProperties } from "react";
-import Footer from "./footer";
 
 export default function PdfPage({
   children,
@@ -13,10 +12,7 @@ export default function PdfPage({
   return (
     <main>
       <style>{`@page { size: A4 portrait; margin: ${pageMargin}; }`}</style>
-      <div style={style}>
-        {children}
-        <Footer />
-      </div>
+      <div style={style}>{children}</div>
     </main>
   );
 }

@@ -1,4 +1,5 @@
 import { CSSProperties } from "react";
+import { INFO } from "../../../src/lib/variables";
 
 export default function InfoHeader({
   children,
@@ -16,12 +17,13 @@ export default function InfoHeader({
         color: "black",
       }}
     >
+      {/* LEFT */}
       <div style={{ flex: 1 }}>
-        <h2>My IT Studio Pty Ltd.</h2>
+        <h2>{INFO.name}</h2>
         <p>
-          Room 5, Bank Arcade, 64-68 Liverpool Street
+          {INFO.address1}
           <br />
-          Hobart, TAS 7000
+          {INFO.address2}
         </p>
         <p>
           https://my-it.com.au
@@ -31,6 +33,7 @@ export default function InfoHeader({
           info@my-it.com.au
         </p>
       </div>
+      {/* RIGHT */}
       <div style={style}>{children}</div>
     </section>
   );

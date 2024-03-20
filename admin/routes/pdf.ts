@@ -26,7 +26,7 @@ export async function pdfAPI(
       .status(200)
       .send(pdfBuffer);
   } catch (e) {
-    console.log("[]", e);
+    console.log("[pdfAPI]", e);
     res.status(418).json({ error: e });
   }
 }

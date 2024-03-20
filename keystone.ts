@@ -11,9 +11,9 @@ import {
 } from "./src/lib/variables";
 import { type Context } from ".keystone/types";
 import { NextApiRequest, NextApiResponse } from "next";
-import { serviceItemDuplicateAPI } from "./admin/routes/service-item/duplicate";
-import { serviceDuplicateAPI } from "./admin/routes/service/duplicate";
 import { pdfAPI } from "./admin/routes/pdf";
+import { serviceDuplicateAPI } from "./admin/routes/duplicate/service";
+import { serviceItemDuplicateAPI } from "./admin/routes/duplicate/service-item";
 
 function withContext<
   F extends (

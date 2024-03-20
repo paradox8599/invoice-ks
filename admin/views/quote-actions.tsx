@@ -16,8 +16,6 @@ export const Field = ({
   onChange,
   field,
 }: FieldProps<typeof controller>) => {
-  console.log(itemValue);
-
   return (
     <FieldContainer>
       <FieldLabel>{field.label}</FieldLabel>

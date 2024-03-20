@@ -33,7 +33,7 @@ export const ServiceItem: Lists.ServiceItem = list({
       const serviceCount = await context.sudo().query.Service.count({
         where: { items: { some: { id: { equals: item.id } } } },
       });
-      if (serviceCount > 0) {
+      if (serviceCount > 1) {
         addValidationError("Cannot update item, used by other services.");
       }
     },
