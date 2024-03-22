@@ -1,7 +1,6 @@
 import { VALUES } from "../values";
 
 export type ItemData = {
-  type: { name: string };
   description: string;
   qty: string;
   unitPrice: string;
@@ -46,7 +45,6 @@ export default function Items({
             }}
           >
             <th>#</th>
-            <th>Type</th>
             <th style={{ whiteSpace: "pre-line" }}>Description</th>
             <th>Qty</th>
             <th>Unit Price</th>
@@ -62,7 +60,6 @@ export default function Items({
               }}
             >
               <td>{i + 1}</td>
-              <td>{item.type.name}</td>
               <td
                 style={{
                   textAlign: "start",

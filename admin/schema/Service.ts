@@ -1,7 +1,13 @@
 import { type Lists } from ".keystone/types";
 import { graphql, list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
-import { json, relationship, text, virtual } from "@keystone-6/core/fields";
+import {
+  checkbox,
+  json,
+  relationship,
+  text,
+  virtual,
+} from "@keystone-6/core/fields";
 import { createdAtField, updatedAtField } from "../helpers/fields";
 
 export const Service: Lists.Service = list({
@@ -28,9 +34,9 @@ export const Service: Lists.Service = list({
         resolve: async (item, _args, context) => {
           const s = (await context.sudo().query.Service.findOne({
             where: { id: item.id },
-            query: "totalAmount createdAt",
-          })) as { totalAmount: string; createdAt: string };
-          return `[${new Date(s?.createdAt ?? 0).toLocaleDateString()}] ${item.name} - ${s?.totalAmount}`;
+            query: "finalAmount createdAt",
+          })) as { finalAmount: string; createdAt: string };
+          return `[${new Date(s?.createdAt ?? 0).toLocaleDateString()}] ${item.name} - ${s?.finalAmount}`;
         },
       }),
     }),
@@ -83,6 +89,44 @@ export const Service: Lists.Service = list({
         },
       }),
     }),
+    gst: virtual({
+      ui: { itemView: { fieldMode: "hidden" } },
+      field: graphql.field({
+        type: graphql.Int,
+        resolve: async (item, _args, context) => {
+          const s = (await context.sudo().query.Service.findOne({
+            where: { id: item.id },
+            query: "totalCents",
+          })) as { totalCents: number };
+          return Math.round(s.totalCents / 10);
+        },
+      }),
+    }),
+    finalCents: virtual({
+      ui: { itemView: { fieldMode: "hidden" } },
+      field: graphql.field({
+        type: graphql.Int,
+        resolve: async (item, _args, context) => {
+          const s = (await context.sudo().query.Service.findOne({
+            where: { id: item.id },
+            query: "excludeGST totalCents gst",
+          })) as { totalCents: number; excludeGST: boolean; gst: number };
+          return s.totalCents + (s.excludeGST ? 0 : s.gst);
+        },
+      }),
+    }),
+    finalAmount: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve: async (item, _args, context) => {
+          const s = (await context.sudo().query.Service.findOne({
+            where: { id: item.id },
+            query: "finalCents",
+          })) as { finalCents: number };
+          return `$${s.finalCents / 100}`;
+        },
+      }),
+    }),
     quotes: relationship({
       ref: "Quote.service",
       many: true,
@@ -114,6 +158,7 @@ export const Service: Lists.Service = list({
         views: "./admin/views/service-actions",
       },
     }),
+    excludeGST: checkbox({}),
     createdAt: createdAtField(),
     updatedAt: updatedAtField(),
   },

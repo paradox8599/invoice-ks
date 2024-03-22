@@ -42,3 +42,5 @@ export const INFO = {
   address2: process.env.NEXT_PUBLIC_INFO_ADDRESS_2 ?? "",
   email: process.env.NEXT_PUBLIC_INFO_EMAIL ?? "",
 };
+
+export const RESEND_API = process.env.RESEND_API ?? "";

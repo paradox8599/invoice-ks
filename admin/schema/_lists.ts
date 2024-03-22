@@ -8,10 +8,12 @@ import { Service } from "./Service";
 import { ServiceItem } from "./ServiceItem";
 import { ServiceType } from "./ServiceType";
 import { User } from "./User";
+import { MailTemplate } from "./MailTemplate";
 
 export const lists: Lists = {
   User,
   Client,
+  MailTemplate,
   ServiceType,
   ServiceItem,
   Service,

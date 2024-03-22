@@ -7,6 +7,7 @@ import React from "react";
 import moment from "moment";
 import { VALUES } from "../../components/values";
 import Items, { ItemData } from "../../components/pdf/items";
+import Currency from "../../components/pdf/currency";
 
 export default function QuoteView() {
   const router = useRouter();
@@ -22,7 +23,12 @@ export default function QuoteView() {
           businessNumber: string;
           businessNumberType: string;
         };
-        service: { description: string; items: ItemData[]; totalCents: number };
+        service: {
+          description: string;
+          items: ItemData[];
+          totalCents: number;
+          excludeGST: boolean;
+        };
       };
     };
   }>({
@@ -38,6 +44,7 @@ export default function QuoteView() {
             email
           }
           service {
+            excludeGST
             description
             totalCents
             items {
@@ -46,9 +53,6 @@ export default function QuoteView() {
               qty
               unitPrice
               totalCents
-              type {
-                name
-              }
             }
           }
         }
@@ -118,19 +122,19 @@ export default function QuoteView() {
           <p>
             <span>Sub Total:</span>
             <span className="amount">
-              {(quote.service.totalCents / 100).toLocaleString("en-US", {
-                style: "currency",
-                currency: "AUD",
-              })}
+              <Currency amount={quote.service.totalCents} cents />
             </span>
           </p>
           <p>
             <span>GST(10%):</span>
             <span className="amount">
-              {(quote.service.totalCents / 10 / 100).toLocaleString("en-US", {
-                style: "currency",
-                currency: "AUD",
-              })}
+              <Currency
+                amount={
+                  quote.service.totalCents *
+                  (quote.service.excludeGST ? 0 : 0.1)
+                }
+                cents
+              />
             </span>
           </p>
           <div style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -145,13 +149,13 @@ export default function QuoteView() {
               <span>Total:</span>
 
               <span className="amount">
-                {((quote.service.totalCents * 1.1) / 100).toLocaleString(
-                  "en-US",
-                  {
-                    style: "currency",
-                    currency: "AUD",
-                  },
-                )}
+                <Currency
+                  amount={
+                    quote.service.totalCents *
+                    (quote.service.excludeGST ? 1 : 1.1)
+                  }
+                  cents
+                />
               </span>
             </p>
           </div>

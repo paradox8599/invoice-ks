@@ -14,6 +14,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { pdfAPI } from "./admin/routes/pdf";
 import { serviceDuplicateAPI } from "./admin/routes/duplicate/service";
 import { serviceItemDuplicateAPI } from "./admin/routes/duplicate/service-item";
+import { mailAPI, mailPreviewAPI } from "./admin/routes/mail";
 
 function withContext<
   F extends (
@@ -32,20 +33,22 @@ export default withAuth(
   config({
     server: {
       port: KS_PORT,
-      extendExpressApp(app, context) {
-        app.get("/pdf", withContext(context, pdfAPI));
+      extendExpressApp(app, ctx) {
+        app.get("/pdf", withContext(ctx, pdfAPI));
         app.post(
           "/api/service-item/duplicate",
-          withContext(context, serviceItemDuplicateAPI),
+          withContext(ctx, serviceItemDuplicateAPI),
         );
         app.post(
           "/api/service/duplicate",
-          withContext(context, serviceDuplicateAPI),
+          withContext(ctx, serviceDuplicateAPI),
         );
+        app.post("/api/mail/send", withContext(ctx, mailAPI));
+        app.post("/api/mail/preview", withContext(ctx, mailPreviewAPI));
       },
     },
     ui: {
-      publicPages: ["/pdf/quote", "/view/quote"],
+      publicPages: ["/pdf", "/view/quote"],
       // fix: AdminMeta access denied when login to admin ui
       isAccessAllowed: (ctx) => {
         return ctx.session;

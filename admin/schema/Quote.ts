@@ -83,9 +83,17 @@ export const Quote: Lists.Quote = list({
       many: false,
       ui: {
         displayMode: "cards",
-        cardFields: ["name", "description", "items", "totalAmount"],
-        inlineCreate: { fields: ["name", "description", "items"] },
-        inlineEdit: { fields: ["name", "description", "items"] },
+        cardFields: [
+          "name",
+          "description",
+          "items",
+          "finalAmount",
+          "excludeGST",
+        ],
+        inlineCreate: {
+          fields: ["name", "description", "items", "excludeGST"],
+        },
+        inlineEdit: { fields: ["name", "description", "items", "excludeGST"] },
         inlineConnect: true,
       },
       hooks: {
@@ -99,6 +107,8 @@ export const Quote: Lists.Quote = list({
         },
       },
     }),
+    emailTemplate: relationship({ ref: "MailTemplate" }),
+    preview: text({ ui: { views: "./admin/views/email-preview" } }),
     emailedAt: timestamp({
       ui: {
         createView: { fieldMode: "hidden" },
