@@ -49,7 +49,13 @@ export default withAuth(
       },
     },
     ui: {
-      publicPages: ["/pdf", "/view/quote"],
+      publicPages: [
+        "/pdf",
+        "/view/quote",
+        "/view/contract",
+        "/view/invoice",
+        "/signature",
+      ],
       // fix: AdminMeta access denied when login to admin ui
       isAccessAllowed: (ctx) => {
         return ctx.session;

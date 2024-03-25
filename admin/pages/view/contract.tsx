@@ -8,6 +8,7 @@ import moment from "moment";
 import Items, { ItemData } from "../../components/pdf/items";
 import SubTotal from "../../components/pdf/subtotal";
 
+// TODO: implement
 export default function QuoteView() {
   const router = useRouter();
   const id = router.query.id as string;
@@ -33,8 +34,8 @@ export default function QuoteView() {
     };
   }>({
     query: /* GraphQL */ `
-      contract ($where: ContractWhereUniqueInput!) {
-        quote(where: $where) {
+      query ($where: ContractWhereUniqueInput!) {
+        contract(where: $where) {
           createdAt
           fullNumber
           client {
