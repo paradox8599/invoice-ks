@@ -5,12 +5,8 @@ export default function Currency({
   amount: number;
   cents?: boolean;
 }) {
-  return (
-    <>
-      {(amount / (cents ? 100 : 1)).toLocaleString("en-US", {
-        style: "currency",
-        currency: "AUD",
-      })}
-    </>
-  );
+  return (amount / (cents ? 100 : 1)).toLocaleString("en-US", {
+    style: "currency",
+    currency: "AUD",
+  });
 }

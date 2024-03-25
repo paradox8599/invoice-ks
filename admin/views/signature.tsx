@@ -24,7 +24,9 @@ export const Field = ({ value, itemValue }: FieldProps<typeof controller>) => {
           onClick={async () => {
             if (
               !confirm(
-                "Are you sure you want to remove the signature? This cannot be undone, the client will need to sign again",
+                "Are you sure you want to remove the signature? " +
+                "This cannot be undone, " +
+                "the client will need to sign again",
               )
             ) {
               return;

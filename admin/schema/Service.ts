@@ -9,6 +9,7 @@ import {
   virtual,
 } from "@keystone-6/core/fields";
 import { createdAtField, updatedAtField } from "../helpers/fields";
+import Currency from "../components/pdf/currency";
 
 export const Service: Lists.Service = list({
   access: allowAll,
@@ -77,6 +78,7 @@ export const Service: Lists.Service = list({
         },
       }),
     }),
+    excludeGST: checkbox({}),
     totalAmount: virtual({
       field: graphql.field({
         type: graphql.String,
@@ -85,7 +87,7 @@ export const Service: Lists.Service = list({
             where: { id: item.id },
             query: "totalCents",
           })) as { totalCents: number };
-          return `$${s.totalCents / 100}`;
+          return Currency({ amount: s.totalCents, cents: true });
         },
       }),
     }),
@@ -96,9 +98,21 @@ export const Service: Lists.Service = list({
         resolve: async (item, _args, context) => {
           const s = (await context.sudo().query.Service.findOne({
             where: { id: item.id },
-            query: "totalCents",
-          })) as { totalCents: number };
-          return Math.round(s.totalCents / 10);
+            query: "totalCents excludeGST",
+          })) as { totalCents: number; excludeGST: boolean };
+          return s.excludeGST ? 0 : Math.round(s.totalCents / 10);
+        },
+      }),
+    }),
+    gstAmount: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve: async (item, _args, context) => {
+          const s = (await context.sudo().query.Service.findOne({
+            where: { id: item.id },
+            query: "gst",
+          })) as { gst: number };
+          return Currency({ amount: s.gst, cents: true });
         },
       }),
     }),
@@ -123,7 +137,7 @@ export const Service: Lists.Service = list({
             where: { id: item.id },
             query: "finalCents",
           })) as { finalCents: number };
-          return `$${s.finalCents / 100}`;
+          return Currency({ amount: s.finalCents, cents: true });
         },
       }),
     }),
@@ -158,7 +172,6 @@ export const Service: Lists.Service = list({
         views: "./admin/views/service-actions",
       },
     }),
-    excludeGST: checkbox({}),
     createdAt: createdAtField(),
     updatedAt: updatedAtField(),
   },

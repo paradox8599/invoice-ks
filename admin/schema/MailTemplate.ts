@@ -2,7 +2,7 @@ import { type Lists } from ".keystone/types";
 import { graphql, list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
 import { select, text, virtual } from "@keystone-6/core/fields";
-import { RESEND_DOMAINS } from "../../src/lib/variables";
+import { INFO, RESEND_DOMAINS } from "../../src/lib/variables";
 
 export const MailTemplate: Lists.MailTemplate = list({
   access: allowAll,
@@ -17,7 +17,7 @@ export const MailTemplate: Lists.MailTemplate = list({
     format: select({
       validation: { isRequired: true },
       type: "string",
-      defaultValue: "Text",
+      defaultValue: "text",
       options: [
         { label: "HTML", value: "html" },
         { label: "Text", value: "text" },
@@ -25,13 +25,13 @@ export const MailTemplate: Lists.MailTemplate = list({
     }),
     sender: text({
       validation: { isRequired: true },
-      defaultValue: "My IT Studio",
-      ui: { description: "Display sender name in email" },
+      defaultValue: INFO.name,
+      ui: { description: "Display name as sender" },
     }),
     local: text({
       validation: { isRequired: true },
       defaultValue: "noreply",
-      ui: { description: "Email address (before @)" },
+      ui: { description: "Custom email address (text before @)" },
     }),
     domain: select({
       type: "string",
