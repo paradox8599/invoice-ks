@@ -1,4 +1,5 @@
 import { VALUES } from "../values";
+import Currency from "./currency";
 
 export type ItemData = {
   description: string;
@@ -35,15 +36,11 @@ export default function Items({
         style={{
           width: "100%",
           borderCollapse: "collapse",
+          borderBottom: "2px solid black",
         }}
       >
         <thead>
-          <tr
-            style={{
-              background: VALUES.colors.bg,
-              color: "white",
-            }}
-          >
+          <tr style={{ background: VALUES.colors.bg, color: "white" }}>
             <th>#</th>
             <th style={{ whiteSpace: "pre-line" }}>Description</th>
             <th>Qty</th>
@@ -55,31 +52,18 @@ export default function Items({
           {service.items.map((item, i) => (
             <tr
               key={i.toString()}
-              style={{
-                background: i % 2 !== 0 ? "#eee" : "white",
-              }}
+              style={{ background: i % 2 !== 0 ? "#eee" : "white" }}
             >
               <td>{i + 1}</td>
-              <td
-                style={{
-                  textAlign: "start",
-                  whiteSpace: "pre-line",
-                }}
-              >
+              <td style={{ textAlign: "start", whiteSpace: "pre-line" }}>
                 {item.description}
               </td>
               <td>{item.qty}</td>
               <td>
-                {parseFloat(item.unitPrice).toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "AUD",
-                })}
+                <Currency amount={parseFloat(item.unitPrice)} />
               </td>
               <td>
-                {(item.totalCents / 100).toLocaleString("en-US", {
-                  style: "currency",
-                  currency: "AUD",
-                })}
+                <Currency amount={item.totalCents} cents />
               </td>
             </tr>
           ))}

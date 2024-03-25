@@ -3,6 +3,7 @@ import { graphql, list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
 import {
   calendarDay,
+  checkbox,
   integer,
   relationship,
   text,
@@ -86,6 +87,14 @@ export const Contract: Lists.Contract = list({
       ui: {
         createView: { fieldMode: "hidden" },
         itemView: { fieldMode: "read", fieldPosition: "sidebar" },
+        views: "./admin/views/signature",
+      },
+    }),
+    locked: checkbox({
+      label: "Signature locked",
+      ui: {
+        createView: { fieldMode: "hidden" },
+        itemView: { fieldPosition: "sidebar" },
       },
     }),
     signedAt: timestamp({

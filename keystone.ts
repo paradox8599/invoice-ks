@@ -15,6 +15,7 @@ import { pdfAPI } from "./admin/routes/pdf";
 import { serviceDuplicateAPI } from "./admin/routes/duplicate/service";
 import { serviceItemDuplicateAPI } from "./admin/routes/duplicate/service-item";
 import { mailAPI, mailPreviewAPI } from "./admin/routes/mail";
+import { signatureAPI } from "./admin/routes/signature";
 
 function withContext<
   F extends (
@@ -46,6 +47,7 @@ export default withAuth(
         app.get("/pdf", withContext(ctx, pdfAPI));
         app.get("/api/mail/preview", withContext(ctx, mailPreviewAPI));
         app.post("/api/mail/send", withContext(ctx, mailAPI));
+        app.post("/api/signature", withContext(ctx, signatureAPI));
       },
     },
     ui: {

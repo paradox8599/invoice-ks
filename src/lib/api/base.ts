@@ -34,7 +34,7 @@ export function useGraphql<T>({
   variables?: Obj;
   url?: URL;
 }) {
-  return useSWR<T>([query, variables], () =>
-    graphql<T>({ query, variables, url }),
+  return useSWR<{ data: T }>([query, variables], () =>
+    graphql<{ data: T }>({ query, variables, url }),
   );
 }

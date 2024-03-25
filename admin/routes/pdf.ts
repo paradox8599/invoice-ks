@@ -9,17 +9,15 @@ export async function getPdf({
   path: "quote" | "contract" | "invoice";
   id: string;
 }) {
-  return await pdfFromUrl(`http://localhost:${KS_PORT}/view/${path}?id=${id}`);
+  return await pdfFromUrl(
+    new URL(`http://localhost:${KS_PORT}/view/${path}?id=${id}`),
+  );
 }
 
 export async function pdfAPI(
   req: NextApiRequest,
   res: NextApiResponse,
-  // context: Context,
 ) {
-  // if (!context.session) {
-  //   return res.status(401).json({ error: "Unauthorized" });
-  // }
   if (!req.query.path) {
     return res.status(400).json({ error: "Missing path (collection name)" });
   }
