@@ -44,3 +44,5 @@ export const INFO = {
 };
 
 export const RESEND_API = process.env.RESEND_API ?? "";
+export const RESEND_DOMAINS: string[] =
+  JSON.parse(process.env.RESEND_DOMAINS) ?? [];

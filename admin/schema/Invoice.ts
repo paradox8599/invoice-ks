@@ -3,16 +3,50 @@ import { graphql, list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
 import {
   calendarDay,
-  integer,
   relationship,
+  text,
   timestamp,
   virtual,
 } from "@keystone-6/core/fields";
 import { createdAtField, updatedAtField } from "../helpers/fields";
+import moment from "moment";
 
 export const Invoice: Lists.Invoice = list({
   access: allowAll,
+  hooks: {
+    resolveInput: async ({ operation, context, resolvedData }) => {
+      // calculate item number
+      if (operation === "create") {
+        const dt = new Date();
+        dt.setHours(0, 0, 0, 0);
+        const quotesToday = (await context.sudo().query.Quote.findMany({
+          where: { createdAt: { gt: dt } },
+          orderBy: { number: "desc" },
+          query: "number",
+        })) as unknown as { number: string }[];
+        const quoteNumber = parseInt(quotesToday?.[0]?.number ?? "0") + 1;
+        return {
+          ...resolvedData,
+          number: quoteNumber.toString(),
+        };
+      }
+      return resolvedData;
+    },
+  },
   fields: {
+    number: text({
+      ui: {
+        createView: { fieldMode: "hidden" },
+        itemView: { fieldMode: "hidden" },
+      },
+    }),
+    fullNumber: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve: (item) =>
+          `${moment(item.createdAt).format("YYYYMMDD")}${item.number.padStart(3, "0")}`,
+      }),
+    }),
     client: relationship({
       ref: "Client",
       many: false,
@@ -30,46 +64,6 @@ export const Invoice: Lists.Invoice = list({
         ],
         inlineConnect: true,
       },
-    }),
-    dayIndex: integer({
-      // hidden, used as internal reference, see invoiceNumber for public use
-      ui: {
-        createView: { fieldMode: "hidden" },
-        itemView: { fieldMode: "hidden", fieldPosition: "sidebar" },
-      },
-      hooks: {
-        afterOperation: async ({ operation, item, context }) => {
-          // find the largest dayIndex of the day and increment by 1
-          if (operation === "create") {
-            const now = new Date();
-            now.setHours(0, 0, 0, 0);
-            const invoices = (await context.sudo().query.Invoice.findMany({
-              where: { createdAt: { gt: now.getTime() } },
-              orderBy: { dayIndex: "desc" },
-              take: 1,
-              query: "dayIndex",
-            })) as { dayIndex: number }[];
-            const dayIndex = invoices[0]?.dayIndex ?? 0;
-            await context.sudo().query.Invoice.updateOne({
-              where: { id: item.id },
-              data: { dayIndex: dayIndex + 1 },
-            });
-          }
-        },
-      },
-    }),
-    invoiceNumber: virtual({
-      field: graphql.field({
-        type: graphql.String,
-        resolve: (item, _args, _context) => {
-          const c = item?.createdAt;
-          if (!c) return "";
-          const y = c.getFullYear();
-          const m = String(c.getMonth() + 1).padStart(2, "0");
-          const d = String(c.getDate()).padStart(2, "0");
-          return `${y}${m}${d}${item.dayIndex}`;
-        },
-      }),
     }),
     service: relationship({
       ref: "Service.invoices",

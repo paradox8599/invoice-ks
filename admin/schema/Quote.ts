@@ -5,6 +5,7 @@ import {
   json,
   relationship,
   text,
+  integer,
   timestamp,
   virtual,
 } from "@keystone-6/core/fields";
@@ -15,20 +16,18 @@ export const Quote: Lists.Quote = list({
   access: allowAll,
   hooks: {
     resolveInput: async ({ operation, context, resolvedData }) => {
-      // calculate quote number
+      // calculate item number
       if (operation === "create") {
         const dt = new Date();
         dt.setHours(0, 0, 0, 0);
-        const quotesToday = (await context.sudo().query.Quote.findMany({
+        const itemsToday = (await context.sudo().query.Contract.findMany({
           where: { createdAt: { gt: dt } },
           orderBy: { number: "desc" },
           query: "number",
+          take: 1,
         })) as unknown as { number: string }[];
-        const quoteNumber = parseInt(quotesToday?.[0]?.number ?? "0") + 1;
-        return {
-          ...resolvedData,
-          number: quoteNumber.toString(),
-        };
+        const itemNumber = parseInt(itemsToday?.[0]?.number ?? "0") + 1;
+        return { ...resolvedData, number: itemNumber.toString() };
       }
       return resolvedData;
     },
@@ -53,7 +52,7 @@ export const Quote: Lists.Quote = list({
         itemView: { fieldMode: "hidden" },
       },
     }),
-    quoteNumber: virtual({
+    fullNumber: virtual({
       field: graphql.field({
         type: graphql.String,
         resolve: (item) =>
@@ -63,20 +62,7 @@ export const Quote: Lists.Quote = list({
     client: relationship({
       ref: "Client",
       many: false,
-      ui: {
-        itemView: { fieldMode: "read", fieldPosition: "sidebar" },
-        displayMode: "cards",
-        cardFields: [
-          "alias",
-          "name",
-          "contactPerson",
-          "email",
-          "phone",
-          "businessNumberType",
-          "businessNumber",
-        ],
-        inlineConnect: true,
-      },
+      ui: { itemView: { fieldMode: "read", fieldPosition: "sidebar" } },
     }),
     service: relationship({
       ref: "Service.quotes",
@@ -108,7 +94,12 @@ export const Quote: Lists.Quote = list({
       },
     }),
     emailTemplate: relationship({ ref: "MailTemplate" }),
-    preview: text({ ui: { views: "./admin/views/email-preview" } }),
+    preview: text({
+      ui: {
+        views: "./admin/views/email-preview",
+        createView: { fieldMode: "hidden" },
+      },
+    }),
     emailedAt: timestamp({
       ui: {
         createView: { fieldMode: "hidden" },
@@ -121,9 +112,9 @@ export const Quote: Lists.Quote = list({
         itemView: { fieldMode: "read", fieldPosition: "sidebar" },
       },
     }),
-    actions: json({
-      ui: {},
-    }),
+    // actions: json({
+    //   ui: {},
+    // }),
     createdAt: createdAtField(),
     updatedAt: updatedAtField(),
   },

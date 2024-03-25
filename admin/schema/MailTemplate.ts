@@ -2,6 +2,7 @@ import { type Lists } from ".keystone/types";
 import { graphql, list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
 import { select, text, virtual } from "@keystone-6/core/fields";
+import { RESEND_DOMAINS } from "../../src/lib/variables";
 
 export const MailTemplate: Lists.MailTemplate = list({
   access: allowAll,
@@ -21,6 +22,25 @@ export const MailTemplate: Lists.MailTemplate = list({
         { label: "HTML", value: "html" },
         { label: "Text", value: "text" },
       ],
+    }),
+    sender: text({
+      validation: { isRequired: true },
+      defaultValue: "My IT Studio",
+      ui: { description: "Display sender name in email" },
+    }),
+    local: text({
+      validation: { isRequired: true },
+      defaultValue: "noreply",
+      ui: { description: "Email address (before @)" },
+    }),
+    domain: select({
+      type: "string",
+      ui: { description: "Email domain" },
+      defaultValue: RESEND_DOMAINS[0],
+      options: RESEND_DOMAINS.map((d) => ({
+        label: d,
+        value: d,
+      })),
     }),
     subject: text({
       validation: { isRequired: true },
@@ -53,9 +73,9 @@ type Data = {
     client: {
       businessNumberType: string;
       businessNumber: string;
-      contactPerson: string;
+      contactPerson: string; // Name of the person
       email: string;
-      name: string;
+      name: string; // Business Name
       phone: string;
     };
   };

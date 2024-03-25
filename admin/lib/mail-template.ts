@@ -4,24 +4,28 @@ import { graphql } from "../../src/lib/api/base";
 
 export const resend = new Resend(RESEND_API);
 
-type Data = {
-  quote?: {
-    quoteNumber: string;
-    service: {
-      description: string;
-      totalAmount: string;
-      finalAmount: string;
-      itemsCount: number;
-    };
-    client: {
-      businessNumberType: string;
-      businessNumber: string;
-      contactPerson: string;
-      email: string;
-      name: string;
-      phone: string;
-    };
+type EmailItemData = {
+  fullNumber: string;
+  service: {
+    description: string;
+    totalAmount: string;
+    finalAmount: string;
+    itemsCount: number;
   };
+  client: {
+    businessNumberType: string;
+    businessNumber: string;
+    contactPerson: string;
+    email: string;
+    name: string;
+    phone: string;
+  };
+};
+
+export type EmailMetaData = {
+  quote?: EmailItemData;
+  contract?: EmailItemData;
+  invoice?: EmailItemData;
 };
 
 export async function getTemplateData({
@@ -33,32 +37,43 @@ export async function getTemplateData({
   contract?: string;
   invoice?: string;
 }) {
-  const quoteQuery = `
-        quote(where: $quoteWhere) {
-          quoteNumber
-          service {
-            description
-            totalAmount
-            finalAmount
-            itemsCount
-          }
-          client {
-            businessNumberType
-            businessNumber
-            contactPerson
-            email
-            name
-            phone
-          }
-        }`;
-  // TODO: Contract
-  // TODO: Invoice
+  const commonQuery = `
+    service {
+      description
+      totalAmount
+      finalAmount
+      itemsCount
+    }
+    client {
+      businessNumberType
+      businessNumber
+      contactPerson
+      email
+      name
+      phone
+    }
+  `;
+  const quoteQuery = `quote(where: $quoteWhere) {
+      fullNumber ${commonQuery} 
+    }`;
+  const contractQuery = `contract(where: $contractWhere) {
+      contractNumber ${commonQuery}
+    }
+  `;
+  const invoiceQuery = `invoice(where: $invoiceWhere) {
+      invoiceNumber ${commonQuery}
+    }
+  `;
   const { data } = (await graphql({
     query: /* GraphQL */ `
       query ExampleQuery(
         ${quote ? "$quoteWhere: QuoteWhereUniqueInput!" : ""}
+        ${contract ? "$contractWhere: ContractWhereUniqueInput!" : ""}
+        ${invoice ? "$invoiceWhere: InvoiceWhereUniqueInput!" : ""}
       ) {
         ${quote ? quoteQuery : ""}
+        ${contract ? contractQuery : ""}
+        ${invoice ? invoiceQuery : ""}
       }
     `,
     variables: {
@@ -66,14 +81,25 @@ export async function getTemplateData({
       contractWhere: { id: contract },
       invoiceWhere: { id: invoice },
     },
-  })) as { data: Data };
+  })) as { data: EmailMetaData };
   return data;
 }
 
-export function parseTemplate({ text, data }: { text: string; data: Data }) {
-  const { quote } = data;
-  const client = quote?.client;
-  client;
-  const parsed = eval(`\`${text}\``);
-  return parsed;
+export function parseTemplate({
+  text,
+  data,
+}: {
+  text: string;
+  data: EmailMetaData;
+}) {
+  // provide context to template, which will be executed by eval
+  // safe to use eval here as it is always entered by admin
+  const quote = data.quote;
+  const contract = data.contract;
+  const invoice = data.invoice;
+  const client = quote?.client || contract?.client || invoice?.client;
+
+  client; // to remove unused warning
+
+  return eval(`\`${text}\``);
 }
