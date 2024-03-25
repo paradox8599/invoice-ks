@@ -45,7 +45,7 @@ export async function mailPreviewAPI(
     res.send({ data: { subject, body, format: text.emailTemplate.format } });
   } catch (e) {
     console.log("[mailPreviewAPI]", e);
-    res.status(418).json({ error: e });
+    res.status(500).json({ error: e });
   }
 }
 
@@ -66,7 +66,7 @@ export async function mailAPI(
   if (req.query.invoice && typeof req.query.invoice !== "string") {
     return res.status(400).json({ error: "Invalid invoice id (string)" });
   }
-  if (!req.query.quote || !req.query.contract || !req.query.invoice) {
+  if (!req.query.quote && !req.query.contract && !req.query.invoice) {
     return res
       .status(400)
       .json({ error: "Missing id for quote/contract/invoice" });
@@ -160,6 +160,7 @@ export async function mailAPI(
       data: meta,
     });
 
+    console.log("sending email", item);
     const { data, error } = await resend.emails.send({
       from: `${item.emailTemplate.sender} <${item.emailTemplate.local}@${item.emailTemplate.domain}>`,
       to: [item.client.email],
@@ -168,10 +169,11 @@ export async function mailAPI(
       html: item.emailTemplate.format === "html" ? body : undefined,
       attachments: attachments,
     });
+    console.log("email send result:", data, error);
 
     res.send({ data, error });
   } catch (e) {
     console.log("[mailAPI]", e);
-    res.status(418).json({ error: e });
+    res.status(500).json({ error: e });
   }
 }

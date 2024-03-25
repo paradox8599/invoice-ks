@@ -91,8 +91,11 @@ export function parseTemplate({
   const contract = data.contract;
   const invoice = data.invoice;
   const client = quote?.client || contract?.client || invoice?.client;
+  const service = quote?.service || contract?.service || invoice?.service;
+  const fullNumber =
+    quote?.fullNumber || contract?.fullNumber || invoice?.fullNumber;
 
-  client; // to remove unused warning
+  client && service && fullNumber; // to remove unused warning
 
   return eval(`\`${text}\``);
 }

@@ -33,6 +33,6 @@ export async function serviceDuplicateAPI(
     res.status(201).json({ data: { id: newItem.id } });
   } catch (e) {
     console.log("[serviceDuplicateAPI]", e);
-    res.status(418).json({ error: e });
+    res.status(500).json({ error: e });
   }
 }

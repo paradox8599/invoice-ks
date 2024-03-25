@@ -113,11 +113,7 @@ export default function QuoteView() {
 
       {/* TOTAL */}
       <section className="total">
-        <style>{`.total {
-          .amount {
-            padding: 1rem;
-          }
-        }`}</style>
+        <style>{".total { .amount { padding: 1rem; } }"}</style>
         <div style={{ textAlign: "end" }}>
           <p>
             <span>Sub Total:</span>

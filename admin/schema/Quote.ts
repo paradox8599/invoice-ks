@@ -98,6 +98,7 @@ export const Quote: Lists.Quote = list({
     }),
     emailTemplate: relationship({ ref: "MailTemplate" }),
     preview: text({
+      defaultValue:"quote",
       ui: {
         views: "./admin/views/email-preview",
         createView: { fieldMode: "hidden" },

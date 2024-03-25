@@ -61,25 +61,19 @@ export const MailTemplate: Lists.MailTemplate = list({
       ui: {
         itemView: { fieldPosition: "sidebar" },
         description: /* TypeScript */ `
-type Data = {
-  quote?: {
-    fullNumber: string;
-    service: {
-      description: string;
-      totalAmount: string; // without GST
-      finalAmount: string; // with GST
-      itemsCount: number;
-    };
-    client: {
-      businessNumberType: string;
-      businessNumber: string;
-      contactPerson: string; // Name of the person
-      email: string;
-      name: string; // Business Name
-      phone: string;
-    };
-  };
-};
+Available variables:
+  - client.businessNumberType
+  - client.businessNumber
+  - client.contactPerson
+  - client.email
+  - client.name
+  - client.phone
+  - quote / contract / invoice
+    - fullNumber
+    - service.description
+    - service.totalAmount
+    - service.finalAmount
+    - service.itemsCount
 `,
       },
     }),

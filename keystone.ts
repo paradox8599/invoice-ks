@@ -34,7 +34,6 @@ export default withAuth(
     server: {
       port: KS_PORT,
       extendExpressApp(app, ctx) {
-        app.get("/pdf", withContext(ctx, pdfAPI));
         app.post(
           "/api/service-item/duplicate",
           withContext(ctx, serviceItemDuplicateAPI),
@@ -43,8 +42,10 @@ export default withAuth(
           "/api/service/duplicate",
           withContext(ctx, serviceDuplicateAPI),
         );
+
+        app.get("/pdf", withContext(ctx, pdfAPI));
+        app.get("/api/mail/preview", withContext(ctx, mailPreviewAPI));
         app.post("/api/mail/send", withContext(ctx, mailAPI));
-        app.post("/api/mail/preview", withContext(ctx, mailPreviewAPI));
       },
     },
     ui: {
