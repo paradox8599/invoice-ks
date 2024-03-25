@@ -16,7 +16,7 @@ export default function QuoteView() {
     data: {
       quote: {
         createdAt: string;
-        quoteNumber: string;
+        fullNumber: string;
         client: {
           name: string;
           email: string;
@@ -36,7 +36,7 @@ export default function QuoteView() {
       query ($where: QuoteWhereUniqueInput!) {
         quote(where: $where) {
           createdAt
-          quoteNumber
+          fullNumber
           client {
             businessNumberType
             businessNumber
@@ -76,7 +76,7 @@ export default function QuoteView() {
       <section>
         <InfoHeader style={{ minWidth: "300px" }}>
           <h2>Quote</h2>
-          <p>Quote #: {quote.quoteNumber}</p>
+          <p>Quote #: {quote.fullNumber}</p>
           <p>
             {quote.client.businessNumberType}: {quote.client.businessNumber}
           </p>

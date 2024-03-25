@@ -3,6 +3,7 @@ import { graphql, list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
 import {
   calendarDay,
+  integer,
   relationship,
   text,
   timestamp,
@@ -20,19 +21,20 @@ export const Contract: Lists.Contract = list({
         const dt = new Date();
         dt.setHours(0, 0, 0, 0);
         const itemsToday = (await context.sudo().query.Contract.findMany({
-          where: { createdAt: { gt: dt } },
+          where: { createdAt: { gte: dt } },
           orderBy: { number: "desc" },
           query: "number",
           take: 1,
-        })) as unknown as { number: string }[];
-        const itemNumber = parseInt(itemsToday?.[0]?.number ?? "0") + 1;
-        return { ...resolvedData, number: itemNumber.toString() };
+        })) as unknown as { number: number }[];
+        const itemNumber = (itemsToday?.[0]?.number ?? 0) + 1;
+        return { ...resolvedData, number: itemNumber };
       }
       return resolvedData;
     },
   },
   fields: {
-    number: text({
+    number: integer({
+      defaultValue: 1,
       ui: {
         createView: { fieldMode: "hidden" },
         itemView: { fieldMode: "hidden" },
@@ -41,27 +43,17 @@ export const Contract: Lists.Contract = list({
     fullNumber: virtual({
       field: graphql.field({
         type: graphql.String,
-        resolve: (item) =>
-          `${moment(item.createdAt).format("YYYYMMDD")}${item.number.padStart(3, "0")}`,
+        resolve: (item) => {
+          const dt = moment(item.createdAt).format("YYYYMMDD");
+          const num = item.number?.toString().padStart(3, "0");
+          return `${dt}${num}`;
+        },
       }),
     }),
     client: relationship({
       ref: "Client",
       many: false,
-      ui: {
-        itemView: { fieldMode: "read", fieldPosition: "sidebar" },
-        displayMode: "cards",
-        cardFields: [
-          "alias",
-          "name",
-          "contactPerson",
-          "email",
-          "phone",
-          "businessNumberType",
-          "businessNumber",
-        ],
-        inlineConnect: true,
-      },
+      ui: { itemView: { fieldMode: "read", fieldPosition: "sidebar" } },
     }),
     service: relationship({
       ref: "Service.contracts",

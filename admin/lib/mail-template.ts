@@ -38,6 +38,7 @@ export async function getTemplateData({
   invoice?: string;
 }) {
   const commonQuery = `
+    fullNumber
     service {
       description
       totalAmount
@@ -53,17 +54,9 @@ export async function getTemplateData({
       phone
     }
   `;
-  const quoteQuery = `quote(where: $quoteWhere) {
-      fullNumber ${commonQuery} 
-    }`;
-  const contractQuery = `contract(where: $contractWhere) {
-      contractNumber ${commonQuery}
-    }
-  `;
-  const invoiceQuery = `invoice(where: $invoiceWhere) {
-      invoiceNumber ${commonQuery}
-    }
-  `;
+  const quoteQuery = `quote(where: $quoteWhere) { ${commonQuery} }`;
+  const contractQuery = `contract(where: $contractWhere) { ${commonQuery} }`;
+  const invoiceQuery = `invoice(where: $invoiceWhere) { ${commonQuery} }`;
   const { data } = (await graphql({
     query: /* GraphQL */ `
       query ExampleQuery(

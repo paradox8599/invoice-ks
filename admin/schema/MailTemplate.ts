@@ -63,7 +63,7 @@ export const MailTemplate: Lists.MailTemplate = list({
         description: /* TypeScript */ `
 type Data = {
   quote?: {
-    quoteNumber: string;
+    fullNumber: string;
     service: {
       description: string;
       totalAmount: string; // without GST
