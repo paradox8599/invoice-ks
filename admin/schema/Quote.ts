@@ -98,10 +98,18 @@ export const Quote: Lists.Quote = list({
     }),
     emailTemplate: relationship({ ref: "MailTemplate" }),
     preview: text({
-      defaultValue:"quote",
+      defaultValue: "quote",
       ui: {
         views: "./admin/views/email-preview",
         createView: { fieldMode: "hidden" },
+      },
+    }),
+    actions: text({
+      defaultValue: "quote",
+      ui: {
+        createView: { fieldMode: "hidden" },
+        itemView: { fieldPosition: "sidebar" },
+        views: "./admin/views/actions",
       },
     }),
     emailedAt: timestamp({
@@ -116,9 +124,6 @@ export const Quote: Lists.Quote = list({
         itemView: { fieldMode: "read", fieldPosition: "sidebar" },
       },
     }),
-    // actions: json({
-    //   ui: {},
-    // }),
     createdAt: createdAtField(),
     updatedAt: updatedAtField(),
   },

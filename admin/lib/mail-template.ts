@@ -1,6 +1,7 @@
 import { Resend } from "resend";
 import { RESEND_API } from "../../src/lib/variables";
 import { graphql } from "../../src/lib/api/base";
+import Mustache from "mustache";
 
 export const resend = new Resend(RESEND_API);
 
@@ -85,8 +86,6 @@ export function parseTemplate({
   text: string;
   data: EmailMetaData;
 }) {
-  // provide context to template, which will be executed by eval
-  // safe to use eval here as it is always entered by admin
   const quote = data.quote;
   const contract = data.contract;
   const invoice = data.invoice;
@@ -95,7 +94,12 @@ export function parseTemplate({
   const fullNumber =
     quote?.fullNumber || contract?.fullNumber || invoice?.fullNumber;
 
-  client && service && fullNumber; // to remove unused warning
-
-  return eval(`\`${text}\``);
+  return Mustache.render(text, {
+    quote,
+    contract,
+    invoice,
+    client,
+    service,
+    fullNumber,
+  });
 }

@@ -61,19 +61,19 @@ export const MailTemplate: Lists.MailTemplate = list({
       ui: {
         itemView: { fieldPosition: "sidebar" },
         description: /* TypeScript */ `
+Use double curly braces to insert a variable: {{variable}} 
 Available variables:
-  - client.businessNumberType
-  - client.businessNumber
-  - client.contactPerson
-  - client.email
-  - client.name
-  - client.phone
-  - quote / contract / invoice
-    - fullNumber
-    - service.description
-    - service.totalAmount
-    - service.finalAmount
-    - service.itemsCount
+  - {{client.businessNumberType}}
+  - {{client.businessNumber}}
+  - {{client.contactPerson}}
+  - {{client.email}}
+  - {{client.name}}
+  - {{client.phone}}
+  - {{fullNumber}}
+  - {{service.description}}
+  - {{service.totalAmount}}
+  - {{service.finalAmount}}
+  - {{service.itemsCount}}
 `,
       },
     }),

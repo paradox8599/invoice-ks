@@ -5,9 +5,7 @@ import InfoHeader from "../../components/pdf/header";
 import { useGraphql } from "../../../src/lib/api/base";
 import React from "react";
 import moment from "moment";
-import { VALUES } from "../../components/values";
 import Items, { ItemData } from "../../components/pdf/items";
-import Currency from "../../components/pdf/currency";
 import SubTotal from "../../components/pdf/subtotal";
 
 export default function QuoteView() {
@@ -16,7 +14,7 @@ export default function QuoteView() {
 
   const { data } = useGraphql<{
     data: {
-      quote: {
+      contract: {
         createdAt: string;
         fullNumber: string;
         client: {
@@ -35,7 +33,7 @@ export default function QuoteView() {
     };
   }>({
     query: /* GraphQL */ `
-      query ($where: QuoteWhereUniqueInput!) {
+      contract ($where: ContractWhereUniqueInput!) {
         quote(where: $where) {
           createdAt
           fullNumber
@@ -62,8 +60,9 @@ export default function QuoteView() {
     `,
     variables: { where: { id } },
   });
-  const quote = React.useMemo(() => data?.data.quote, [data]);
-  if (!quote) {
+  const contract = React.useMemo(() => data?.data.contract, [data]);
+
+  if (!contract) {
     return (
       <PdfPage>
         <div>not found</div>
@@ -77,55 +76,26 @@ export default function QuoteView() {
       {/* HEADER */}
       <section>
         <InfoHeader style={{ minWidth: "300px" }}>
-          <h2>Quote</h2>
-          <p>Quote #: {quote.fullNumber}</p>
+          <h2>Contract</h2>
+          <p>Contract #: {contract.fullNumber}</p>
           <p>
-            {quote.client.businessNumberType}: {quote.client.businessNumber}
+            {contract.client.businessNumberType}:{" "}
+            {contract.client.businessNumber}
           </p>
-          <p>Date: {moment(quote.createdAt).format("dddd, DD MMM YYYY")}</p>
+          <p>Date: {moment(contract.createdAt).format("dddd, DD MMM YYYY")}</p>
         </InfoHeader>
       </section>
 
-      {/* QUOTE TO */}
-      <section>
-        <h2
-          style={{
-            textTransform: "uppercase",
-            background: VALUES.colors.bg,
-            color: "white",
-            padding: "0.5rem 1rem",
-          }}
-        >
-          Quote to
-        </h2>
-        <div style={{ padding: "0rem 2rem" }}>
-          <p style={{ fontWeight: "bold" }}>
-            {quote.client.name}
-            <br />
-            {quote.client.email}
-          </p>
-          <p>{quote.service.description}</p>
-        </div>
-      </section>
+      {/* TODO: client info */}
 
       {/* ITEMS */}
       <section className="items">
-        <Items service={quote.service} />
+        <Items service={contract.service} />
       </section>
 
       {/* TOTAL */}
       <section>
-        <SubTotal service={quote.service} />
-      </section>
-
-      {/* TERMS */}
-      <section style={{ pageBreakInside: "avoid" }}>
-        <p>Terms & Conditions</p>
-        <p style={{ borderTop: "1px solid black", paddingTop: "1rem" }}>
-          *Above quotation is valid within 3 months
-          <br />
-          *The minimum subscription period is 6 months if applicable.
-        </p>
+        <SubTotal service={contract.service} />
       </section>
     </PdfPage>
   );

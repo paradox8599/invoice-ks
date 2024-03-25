@@ -25,10 +25,10 @@ export async function pdfAPI(
   }
   if (
     typeof req.query.path !== "string" ||
-    !(req.query.path in ["quote", "contract", "invoice"])
+    !["quote", "contract", "invoice"].includes(req.query.path)
   ) {
     return res.status(400).json({
-      error: "Invalid type of path (string, quote, contract, invoice)",
+      error: `Invalid type of path (string: quote, contract, invoice), got ${req.query.path}`,
     });
   }
   if (!req.query.id) {
