@@ -2,7 +2,7 @@ import { randomBytes } from "crypto";
 
 try {
   require("dotenv").config();
-} catch (e) { }
+} catch (e) {}
 
 // KeystoneJS server config
 type DB_PROVIDER_TYPE = "sqlite" | "mysql" | "postgresql";
@@ -19,7 +19,7 @@ export const DATABASE_URL = process.env.DATABASE_URL || "file://keystone.db";
 
 // KeystoneJS & GraphQL Server
 export const SERVER_URL = new URL(
-  process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:3000",
+  process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:3000"
 );
 
 export const GRAPHQL_PATH =
@@ -41,9 +41,12 @@ export const INFO = {
   address1: process.env.NEXT_PUBLIC_INFO_ADDRESS_1 ?? "",
   address2: process.env.NEXT_PUBLIC_INFO_ADDRESS_2 ?? "",
   email: process.env.NEXT_PUBLIC_INFO_EMAIL ?? "",
+  logo: process.env.NEXT_PUBLIC_LOGO_URL ?? "",
+  barcode: process.env.NEXT_PUBLIC_BARCODE_URL ?? "",
+  abn: process.env.NEXT_PUBLIC_SELF_ABN ?? "",
 };
 
 export const RESEND_API = process.env.RESEND_API ?? "";
 export const RESEND_DOMAINS: string[] = JSON.parse(
-  process.env.RESEND_DOMAINS ?? "[]",
+  process.env.RESEND_DOMAINS ?? "[]"
 );
