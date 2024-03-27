@@ -24,6 +24,7 @@ export const Field = ({ value }: FieldProps<typeof controller>) => {
         <Button
           style={{ marginTop: "1rem" }}
           onClick={async () => {
+            if (!confirm("Confirm sending email?")) return;
             const res = await fetch(`/api/mail/send?${path}=${id}`, {
               method: "POST",
             });

@@ -9,11 +9,13 @@ import { ServiceItem } from "./ServiceItem";
 import { ServiceType } from "./ServiceType";
 import { User } from "./User";
 import { MailTemplate } from "./MailTemplate";
+import { FeesTemplate } from "./FeesTemplate";
 
 export const lists: Lists = {
   User,
   Client,
   MailTemplate,
+  FeesTemplate,
   ServiceType,
   ServiceItem,
   Service,

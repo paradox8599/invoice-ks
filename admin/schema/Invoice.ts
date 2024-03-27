@@ -5,6 +5,7 @@ import {
   calendarDay,
   integer,
   relationship,
+  text,
   timestamp,
   virtual,
 } from "@keystone-6/core/fields";
@@ -32,6 +33,18 @@ export const Invoice: Lists.Invoice = list({
     },
   },
   fields: {
+    label: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve: async (item, _args, context) => {
+          const invoice = (await context.sudo().query.Invoice.findOne({
+            where: { id: item.id },
+            query: "service { name }",
+          })) as { service: { name: string } };
+          return `Invoice - ${invoice?.service.name}` ?? "";
+        },
+      }),
+    }),
     number: integer({
       defaultValue: 1,
       ui: {
@@ -74,6 +87,16 @@ export const Invoice: Lists.Invoice = list({
         },
       },
     }),
+
+    emailTemplate: relationship({ ref: "MailTemplate" }),
+    preview: text({
+      defaultValue: "invoice",
+      ui: {
+        views: "./admin/views/email-preview",
+        createView: { fieldMode: "hidden" },
+      },
+    }),
+
     invoiceDate: calendarDay({ validation: { isRequired: true } }),
     emailedAt: timestamp({
       ui: {

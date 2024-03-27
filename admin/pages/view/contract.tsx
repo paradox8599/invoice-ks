@@ -15,6 +15,7 @@ export type PdfContractData = {
   fullNumber: string;
   signature: string;
   signedAt: string | null;
+  feesTemplate: { content: string };
   client: {
     name: string;
     email: string;
@@ -42,6 +43,9 @@ export default function ContractView() {
           fullNumber
           signature
           signedAt
+          feesTemplate {
+            content
+          }
           client {
             contactPerson
             businessNumberType
@@ -133,14 +137,14 @@ export default function ContractView() {
           <p style={{ fontWeight: "bold" }}>This is the agreement between:</p>
           <div style={{ flex: 1 }}>
             <p>
-              {INFO.name}(ABN:{INFO.abn})
+              {INFO.name} (ABN: {INFO.abn})
             </p>
             <p>{INFO.address1}</p>
             <p>{INFO.address2}</p>
           </div>
           <p style={{ fontWeight: "bold" }}>And</p>
           <p>
-            {contract.client.name}( {contract.client.businessNumberType}:{" "}
+            {contract.client.name} ({contract.client.businessNumberType}:{" "}
             {contract.client.businessNumber})
           </p>
         </div>
@@ -165,8 +169,7 @@ export default function ContractView() {
       {/* FEES & CHARGES */}
       <section>
         <Title>Fees & Charges</Title>
-        {/* TODO: use template  */}
-        <Paragraph>From input</Paragraph>
+        <Paragraph>{contract.feesTemplate.content}</Paragraph>
       </section>
       {/* Notice */}
       <section>
@@ -192,7 +195,6 @@ export default function ContractView() {
       <section>
         <ContractTerms />
       </section>
-      );
     </PdfPage>
   );
 }

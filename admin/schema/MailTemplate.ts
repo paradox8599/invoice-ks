@@ -46,7 +46,7 @@ export const MailTemplate: Lists.MailTemplate = list({
       validation: { isRequired: true },
       ui: { description: "" },
     }),
-    template: text({
+    content: text({
       validation: { isRequired: true },
       ui: { displayMode: "textarea" },
     }),
@@ -55,7 +55,7 @@ export const MailTemplate: Lists.MailTemplate = list({
       type: "string",
       options: [
         { label: "Quote", value: "Quote" },
-        { label: "Contact", value: "Contact" },
+        { label: "Contract", value: "Contract" },
         { label: "Invoice", value: "Invoice" },
       ],
       ui: {

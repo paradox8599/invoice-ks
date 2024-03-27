@@ -41,7 +41,7 @@ export const Quote: Lists.Quote = list({
             where: { id: item.id },
             query: "service { name }",
           })) as { service: { name: string } };
-          return quote?.service.name ?? "";
+          return `Quote - ${quote?.service.name}` ?? "";
         },
       }),
     }),

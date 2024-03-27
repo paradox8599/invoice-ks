@@ -33,7 +33,7 @@ function withContext<
 export default withAuth(
   config({
     server: {
-      options: { host: "0.0.0.0" },
+      // options: { host: "0.0.0.0" },
       port: KS_PORT,
       extendExpressApp(app, ctx) {
         app.post(

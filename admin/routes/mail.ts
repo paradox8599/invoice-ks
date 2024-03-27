@@ -20,17 +20,51 @@ export async function mailPreviewAPI(
   if (req.query.quote && typeof req.query.quote !== "string") {
     return res.status(400).json({ error: "Invalid quote id (string)" });
   }
+  if (req.query.contract && typeof req.query.contract !== "string") {
+    return res.status(400).json({ error: "Invalid contract id (string)" });
+  }
+  if (req.query.invoice && typeof req.query.invoice !== "string") {
+    return res.status(400).json({ error: "Invalid invoice id (string)" });
+  }
 
   try {
-    const data = await getTemplateData({ quote: req.query.quote });
-    const text = (await context.sudo().query.Quote.findOne({
-      where: { id: req.query.quote },
-      query: "emailTemplate { subject template format }",
-    })) as {
-      emailTemplate: { subject: string; template: string; format: string };
+    const data = await getTemplateData({
+      quote: req.query.quote,
+      contract: req.query.contract,
+      invoice: req.query.invoice,
+    });
+    let text: {
+      emailTemplate: { subject: string; content: string; format: string };
     };
-
-    if (!text) return res.status(404).json({ error: "Quote not found" });
+    const query = "emailTemplate { subject content format }";
+    // quote
+    if (req.query.quote) {
+      text = (await context.sudo().query.Quote.findOne({
+        where: { id: req.query.quote },
+        query,
+      })) as typeof text;
+      if (!text) return res.status(404).json({ error: "Quote not found" });
+    }
+    // contract
+    else if (req.query.contract) {
+      text = (await context.sudo().query.Contract.findOne({
+        where: { id: req.query.contract },
+        query,
+      })) as typeof text;
+      if (!text) return res.status(404).json({ error: "Contract not found" });
+    }
+    // invoice
+    else if (req.query.invoice) {
+      text = (await context.sudo().query.Invoice.findOne({
+        where: { id: req.query.invoice },
+        query,
+      })) as typeof text;
+      if (!text) return res.status(404).json({ error: "Invoice not found" });
+    }
+    // exception
+    else {
+      return res.status(400).json({ error: "Missing id" });
+    }
 
     const subject = parseTemplate({
       text: text.emailTemplate.subject ?? "",
@@ -38,7 +72,7 @@ export async function mailPreviewAPI(
     });
 
     const body = parseTemplate({
-      text: text.emailTemplate.template ?? "",
+      text: text.emailTemplate.content ?? "",
       data: data,
     });
 
@@ -75,14 +109,14 @@ export async function mailAPI(
   try {
     type EmailTemplate = {
       subject: string;
-      template: string;
+      content: string;
       format: string;
       sender: string;
       local: string;
       domain: string;
     };
     const query =
-      "id fullNumber client { email } emailTemplate { subject template format sender local domain }";
+      "id fullNumber client { email } emailTemplate { subject content format sender local domain }";
 
     const attachments: { filename: string; content: Buffer }[] = [];
     const meta: EmailMetaData = await getTemplateData({
@@ -156,7 +190,7 @@ export async function mailAPI(
       data: meta,
     });
     const body = parseTemplate({
-      text: item.emailTemplate.template ?? "",
+      text: item.emailTemplate.content ?? "",
       data: meta,
     });
 

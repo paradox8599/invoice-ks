@@ -34,6 +34,19 @@ export const Contract: Lists.Contract = list({
     },
   },
   fields: {
+    // service name as label
+    label: virtual({
+      field: graphql.field({
+        type: graphql.String,
+        resolve: async (item, _args, context) => {
+          const contract = (await context.sudo().query.Contract.findOne({
+            where: { id: item.id },
+            query: "service { name }",
+          })) as { service: { name: string } };
+          return `Contract - ${contract?.service.name}` ?? "";
+        },
+      }),
+    }),
     number: integer({
       defaultValue: 1,
       ui: {
@@ -76,7 +89,25 @@ export const Contract: Lists.Contract = list({
         },
       },
     }),
-    startDate: calendarDay({ validation: { isRequired: true } }),
+    feesTemplate: relationship({ ref: "FeesTemplate" }),
+
+    emailTemplate: relationship({ ref: "MailTemplate" }),
+    preview: text({
+      defaultValue: "contract",
+      ui: {
+        views: "./admin/views/email-preview",
+        createView: { fieldMode: "hidden" },
+      },
+    }),
+
+    actions: text({
+      defaultValue: "contract",
+      ui: {
+        createView: { fieldMode: "hidden" },
+        itemView: { fieldPosition: "sidebar" },
+        views: "./admin/views/actions",
+      },
+    }),
     emailedAt: timestamp({
       ui: {
         createView: { fieldMode: "hidden" },
@@ -91,6 +122,7 @@ export const Contract: Lists.Contract = list({
       },
     }),
     locked: checkbox({
+      defaultValue: true,
       label: "Signature locked",
       ui: {
         createView: { fieldMode: "hidden" },

@@ -9,7 +9,6 @@ export function getResend() {
   return _resend;
 }
 
-
 type EmailItemData = {
   fullNumber: string;
   service: {

@@ -41,7 +41,7 @@ export const INFO = {
   address1: process.env.NEXT_PUBLIC_INFO_ADDRESS_1 ?? "",
   address2: process.env.NEXT_PUBLIC_INFO_ADDRESS_2 ?? "",
   email: process.env.NEXT_PUBLIC_INFO_EMAIL ?? "",
-  abn: process.env.NEXT_PUBLIC_SELF_ABN ?? "",
+  abn: process.env.NEXT_PUBLIC_INFO_ABN ?? "",
 };
 
 export const ASSETS = {
