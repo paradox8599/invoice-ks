@@ -43,6 +43,10 @@ export const INFO = {
   email: process.env.NEXT_PUBLIC_INFO_EMAIL ?? "",
 };
 
+export const PDF = {
+  SignatureUrl: process.env.NEXT_PUBLIC_SIGNATURE_URL ?? "",
+};
+
 export const RESEND_API = process.env.RESEND_API ?? "";
 export const RESEND_DOMAINS: string[] = JSON.parse(
   process.env.RESEND_DOMAINS ?? "[]",

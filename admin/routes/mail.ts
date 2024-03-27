@@ -3,7 +3,7 @@ import {
   EmailMetaData,
   getTemplateData,
   parseTemplate,
-  resend,
+  getResend,
 } from "../lib/mail-template";
 
 import { Context } from ".keystone/types";
@@ -161,17 +161,29 @@ export async function mailAPI(
     });
 
     console.log("sending email", item);
-    const { data, error } = await resend.emails.send({
-      from: `${item.emailTemplate.sender} <${item.emailTemplate.local}@${item.emailTemplate.domain}>`,
-      to: [item.client.email],
-      subject,
-      text: item.emailTemplate.format === "text" ? body : undefined,
-      html: item.emailTemplate.format === "html" ? body : undefined,
-      attachments: attachments,
-    });
-    console.log("email send result:", data, error);
+    let emailRes: { data: unknown; error: unknown };
+    if (item.emailTemplate.format === "text") {
+      emailRes = await getResend().emails.send({
+        from: `${item.emailTemplate.sender} <${item.emailTemplate.local}@${item.emailTemplate.domain}>`,
+        to: [item.client.email],
+        subject,
+        text: body,
+        attachments: attachments,
+      });
+    } else if (item.emailTemplate.format === "html") {
+      emailRes = await getResend().emails.send({
+        from: `${item.emailTemplate.sender} <${item.emailTemplate.local}@${item.emailTemplate.domain}>`,
+        to: [item.client.email],
+        subject,
+        html: body,
+        attachments: attachments,
+      });
+    } else {
+      throw new Error("Invalid email format");
+    }
+    console.log("email send result:", emailRes.data, emailRes.error);
 
-    res.send({ data, error });
+    res.send({ data: emailRes.data, error: emailRes.error });
   } catch (e) {
     console.log("[mailAPI]", e);
     res.status(500).json({ error: e });

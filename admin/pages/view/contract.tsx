@@ -7,38 +7,42 @@ import React from "react";
 import moment from "moment";
 import Items, { ItemData } from "../../components/pdf/items";
 import SubTotal from "../../components/pdf/subtotal";
+import SignatureDisplay from "../../components/pdf/signature-display";
 
-// TODO: implement
-export default function QuoteView() {
+export type PdfContractData = {
+  createdAt: string;
+  fullNumber: string;
+  signature: string;
+  signedAt: string | null;
+  client: {
+    name: string;
+    email: string;
+    contactPerson: string;
+    businessNumber: string;
+    businessNumberType: string;
+  };
+  service: {
+    description: string;
+    items: ItemData[];
+    totalCents: number;
+    excludeGST: boolean;
+  };
+};
+
+export default function ContractView() {
   const router = useRouter();
   const id = router.query.id as string;
 
-  const { data } = useGraphql<{
-    data: {
-      contract: {
-        createdAt: string;
-        fullNumber: string;
-        client: {
-          name: string;
-          email: string;
-          businessNumber: string;
-          businessNumberType: string;
-        };
-        service: {
-          description: string;
-          items: ItemData[];
-          totalCents: number;
-          excludeGST: boolean;
-        };
-      };
-    };
-  }>({
+  const { data } = useGraphql<{ contract: PdfContractData }>({
     query: /* GraphQL */ `
       query ($where: ContractWhereUniqueInput!) {
         contract(where: $where) {
           createdAt
           fullNumber
+          signature
+          signedAt
           client {
+            contactPerson
             businessNumberType
             businessNumber
             name
@@ -90,13 +94,18 @@ export default function QuoteView() {
       {/* TODO: client info */}
 
       {/* ITEMS */}
-      <section className="items">
+      <section>
         <Items service={contract.service} />
       </section>
 
       {/* TOTAL */}
       <section>
         <SubTotal service={contract.service} />
+      </section>
+
+      {/* SIGNATURE */}
+      <section>
+        <SignatureDisplay contract={contract} />
       </section>
     </PdfPage>
   );

@@ -14,22 +14,20 @@ export default function QuoteView() {
   const id = router.query.id as string;
 
   const { data } = useGraphql<{
-    data: {
-      quote: {
-        createdAt: string;
-        fullNumber: string;
-        client: {
-          name: string;
-          email: string;
-          businessNumber: string;
-          businessNumberType: string;
-        };
-        service: {
-          description: string;
-          items: ItemData[];
-          totalCents: number;
-          excludeGST: boolean;
-        };
+    quote: {
+      createdAt: string;
+      fullNumber: string;
+      client: {
+        name: string;
+        email: string;
+        businessNumber: string;
+        businessNumberType: string;
+      };
+      service: {
+        description: string;
+        items: ItemData[];
+        totalCents: number;
+        excludeGST: boolean;
       };
     };
   }>({
@@ -74,7 +72,7 @@ export default function QuoteView() {
   return (
     <PdfPage>
       {/* HEADER */}
-      <section>
+      <section style={{ pageBreakInside: "avoid" }}>
         <InfoHeader style={{ minWidth: "300px" }}>
           <h2>Quote</h2>
           <p>Quote #: {quote.fullNumber}</p>
@@ -86,7 +84,7 @@ export default function QuoteView() {
       </section>
 
       {/* QUOTE TO */}
-      <section>
+      <section style={{ pageBreakInside: "avoid" }}>
         <h2
           style={{
             textTransform: "uppercase",
@@ -108,12 +106,12 @@ export default function QuoteView() {
       </section>
 
       {/* ITEMS */}
-      <section className="items">
+      <section>
         <Items service={quote.service} />
       </section>
 
       {/* TOTAL */}
-      <section>
+      <section style={{ pageBreakInside: "avoid" }}>
         <SubTotal service={quote.service} />
       </section>
 

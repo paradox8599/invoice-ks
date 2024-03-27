@@ -19,14 +19,13 @@ export default function ContractSignatureCard({
     >
       <div
         style={{
-          width: "380",
-          margin: "1.5rem",
+          width: "500",
           border: "2px solid black",
           borderRadius: "10px",
         }}
       >
         <SignatureCanvas
-          canvasProps={{ width: 380, height: 200 }}
+          canvasProps={{ width: 500, height: 200 }}
           ref={theref}
         />
       </div>

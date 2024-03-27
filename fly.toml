@@ -7,7 +7,7 @@ dockerfile = "Dockerfile.admin"
 
 [build.args]
 DB_PROVIDER = "postgresql"
-# fly deploy --build-secret NAME=VALUE
+
 # fly deploy --build-arg NAME=VALUE
 
 [env]

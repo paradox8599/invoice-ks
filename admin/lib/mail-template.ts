@@ -3,7 +3,12 @@ import { RESEND_API } from "../../src/lib/variables";
 import { graphql } from "../../src/lib/api/base";
 import Mustache from "mustache";
 
-export const resend = new Resend(RESEND_API);
+let _resend: Resend;
+export function getResend() {
+  _resend ??= new Resend(RESEND_API);
+  return _resend;
+}
+
 
 type EmailItemData = {
   fullNumber: string;

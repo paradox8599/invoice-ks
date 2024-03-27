@@ -4,6 +4,8 @@ import { useGraphql } from "../../src/lib/api/base";
 import ContractSignatureCard from "../components/signature-canvas";
 import { Button } from "@keystone-ui/button";
 import { SignatureRequest } from "../routes/signature";
+import _ from "lodash";
+import { SERVER_URL } from "../../src/lib/variables";
 
 export default function SignaturePage() {
   const router = useRouter();
@@ -29,52 +31,50 @@ export default function SignaturePage() {
   return (
     <main style={{ textAlign: "center" }}>
       {!contract.signedAt && (
-        <div>
-          <div>
-            <h2>Signing Contract</h2>
-          </div>
-
-          <div style={{ padding: "4rem" }}>
-            <ContractSignatureCard
-              onSubmit={async (ref) => {
-                if (ref.current?.isEmpty()) {
-                  return alert("Please sign before submitting");
-                }
-                const res = await fetch(`/api/signature?id=${contract.id}`, {
-                  method: "POST",
-                  body: JSON.stringify({
-                    signature: ref.current?.toDataURL(),
-                  } as SignatureRequest),
-                });
-                if (!res.ok) alert("Something went wrong");
-                window.location.reload();
-              }}
-            />
-          </div>
-        </div>
+        <>
+          <h2>Signing Contract</h2>
+          {navigator.pdfViewerEnabled && (
+            <p>Scroll down to the bottom for signing</p>
+          )}
+        </>
       )}
 
-      <Button
-        onClick={() => window.open(`/pdf?path=contract&id=${contract.id}`)}
-        size="small"
-        style={{
-          margin: "1rem",
-          position: "fixed",
-          right: "1rem",
-          bottom: "0.2rem",
-        }}
+      <object
+        data={`/pdf?path=contract&id=${contract.id}`}
+        type="application/pdf"
+        style={{ height: "100vh", width: "100%" }}
       >
-        View PDF in new tab
-      </Button>
+        <p>Your browser does not support PDFs.</p>
+        <a
+          style={{ marginBottom: "1rem" }}
+          href={`/pdf?path=contract&id=${contract.id}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          <Button size="small">Download PDF</Button>
+        </a>
+      </object>
 
-      <iframe
-        src={`/pdf?path=contract&id=${contract.id}&navpanes=0`}
-        title={contract.id}
-        style={{
-          height: "100vh",
-          width: "100%",
-        }}
-      />
+      {!contract.signedAt && (
+        <div style={{ margin: "4rem 0" }}>
+          <h2>Sign here</h2>
+          <ContractSignatureCard
+            onSubmit={async (ref) => {
+              if (ref.current?.isEmpty()) {
+                return alert("Please sign before submitting");
+              }
+              const res = await fetch(`/api/signature?id=${contract.id}`, {
+                method: "POST",
+                body: JSON.stringify({
+                  signature: ref.current?.toDataURL(),
+                } as SignatureRequest),
+              });
+              if (!res.ok) alert("Something went wrong");
+              window.location.reload();
+            }}
+          />
+        </div>
+      )}
     </main>
   );
 }

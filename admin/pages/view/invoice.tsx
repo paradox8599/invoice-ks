@@ -9,27 +9,25 @@ import Items, { ItemData } from "../../components/pdf/items";
 import SubTotal from "../../components/pdf/subtotal";
 
 // TODO: implement
-export default function QuoteView() {
+export default function InvoiceView() {
   const router = useRouter();
   const id = router.query.id as string;
 
   const { data } = useGraphql<{
-    data: {
-      invoice: {
-        createdAt: string;
-        fullNumber: string;
-        client: {
-          name: string;
-          email: string;
-          businessNumber: string;
-          businessNumberType: string;
-        };
-        service: {
-          description: string;
-          items: ItemData[];
-          totalCents: number;
-          excludeGST: boolean;
-        };
+    invoice: {
+      createdAt: string;
+      fullNumber: string;
+      client: {
+        name: string;
+        email: string;
+        businessNumber: string;
+        businessNumberType: string;
+      };
+      service: {
+        description: string;
+        items: ItemData[];
+        totalCents: number;
+        excludeGST: boolean;
       };
     };
   }>({

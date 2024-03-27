@@ -1,9 +1,10 @@
 #!/bin/sh
+DB_URL=$(echo "$DATABASE_URL" | cut -d "?" -f 1)
 while true; do
 	echo "[backup] backup on $(date)"
-	fn="db-$(date +%F).sql"
+	fn=pgdump-$(date +%F-%H-%M-%S).sql
 	echo "[backup] pulling db to $fn"
-	pg_dump "$DATABASE_URL" >"$fn"
+	pg_dump "$DB_URL" >"$fn"
 	echo "[backup] uploading backup"
 	aws s3 cp "$fn" "s3://$AWS_BUCKET/sql/$fn"
 	echo "[backup] clean up"

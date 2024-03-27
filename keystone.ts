@@ -33,6 +33,7 @@ function withContext<
 export default withAuth(
   config({
     server: {
+      options: { host: "0.0.0.0" },
       port: KS_PORT,
       extendExpressApp(app, ctx) {
         app.post(
@@ -59,14 +60,9 @@ export default withAuth(
         "/signature",
       ],
       // fix: AdminMeta access denied when login to admin ui
-      isAccessAllowed: (ctx) => {
-        return ctx.session;
-      },
+      isAccessAllowed: (ctx) => ctx.session,
     },
-    db: {
-      provider: DB_PROVIDER,
-      url: DATABASE_URL,
-    },
+    db: { provider: DB_PROVIDER, url: DATABASE_URL },
     storage: {
       image_store: {
         kind: "s3",
