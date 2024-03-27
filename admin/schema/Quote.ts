@@ -118,12 +118,6 @@ export const Quote: Lists.Quote = list({
         itemView: { fieldMode: "read", fieldPosition: "sidebar" },
       },
     }),
-    acceptedAt: timestamp({
-      ui: {
-        createView: { fieldMode: "hidden" },
-        itemView: { fieldMode: "read", fieldPosition: "sidebar" },
-      },
-    }),
     createdAt: createdAtField(),
     updatedAt: updatedAtField(),
   },

@@ -97,7 +97,19 @@ export const Invoice: Lists.Invoice = list({
       },
     }),
 
-    invoiceDate: calendarDay({ validation: { isRequired: true } }),
+    invoiceDate: calendarDay({
+      validation: { isRequired: true },
+      ui: { itemView: { fieldPosition: "sidebar" } },
+    }),
+
+    actions: text({
+      defaultValue: "invoice",
+      ui: {
+        createView: { fieldMode: "hidden" },
+        itemView: { fieldPosition: "sidebar" },
+        views: "./admin/views/actions",
+      },
+    }),
     emailedAt: timestamp({
       ui: {
         createView: { fieldMode: "hidden" },
@@ -107,7 +119,7 @@ export const Invoice: Lists.Invoice = list({
     paidAt: timestamp({
       ui: {
         createView: { fieldMode: "hidden" },
-        itemView: { fieldMode: "read", fieldPosition: "sidebar" },
+        itemView: { fieldMode: "edit", fieldPosition: "sidebar" },
       },
     }),
     createdAt: createdAtField(),

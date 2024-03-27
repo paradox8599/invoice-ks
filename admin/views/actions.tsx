@@ -8,6 +8,14 @@ import React from "react";
 export const Field = ({ value }: FieldProps<typeof controller>) => {
   const path = (value.inner as unknown as { value: string }).value;
   const id = window.location.href.split("/").toReversed()[0];
+  // type ItemValue = {
+  //   signedAt?: { value: { initial: string | null } };
+  // };
+  // const ivalue = itemValue as ItemValue;
+  // const item = {
+  //   signedAt: ivalue.signedAt?.value.initial,
+  // };
+
   return (
     <FieldContainer>
       <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
@@ -29,6 +37,7 @@ export const Field = ({ value }: FieldProps<typeof controller>) => {
               method: "POST",
             });
             console.log(await res.json());
+            window.location.reload();
           }}
         >
           Send Email

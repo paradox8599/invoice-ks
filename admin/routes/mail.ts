@@ -215,8 +215,26 @@ export async function mailAPI(
     } else {
       throw new Error("Invalid email format");
     }
-    console.log("email send result:", emailRes.data, emailRes.error);
+    console.log("email result:", emailRes.data, emailRes.error);
 
+    if (emailRes.data && !emailRes.error) {
+      if (req.query.quote !== void 0) {
+        await context.sudo().query.Quote.updateOne({
+          where: { id: item.id },
+          data: { emailedAt: new Date() },
+        });
+      } else if (req.query.contract !== void 0) {
+        await context.sudo().query.Contract.updateOne({
+          where: { id: item.id },
+          data: { emailedAt: new Date() },
+        });
+      } else if (req.query.invoice !== void 0) {
+        await context.sudo().query.Invoice.updateOne({
+          where: { id: item.id },
+          data: { emailedAt: new Date() },
+        });
+      }
+    }
     res.send({ data: emailRes.data, error: emailRes.error });
   } catch (e) {
     console.log("[mailAPI]", e);
