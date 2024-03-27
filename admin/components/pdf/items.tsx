@@ -1,3 +1,4 @@
+import css from "styled-jsx/css";
 import { VALUES } from "../values";
 import Currency from "./currency";
 
@@ -19,6 +20,9 @@ export default function Items({
   return (
     <div className="items">
       <style>{`
+        .items tr {
+          break-inside: avoid;
+        }
         .items {
           table, th, td {
             border: 1px solid white;
@@ -28,10 +32,10 @@ export default function Items({
             padding: 0.5rem;
           }
           th {
-            padding: 0 0.5rem
+            padding: 0 0.5rem;
           }
         }
-        `}</style>
+      `}</style>
       <table
         style={{
           width: "100%",

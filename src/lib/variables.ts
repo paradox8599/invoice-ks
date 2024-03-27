@@ -41,10 +41,13 @@ export const INFO = {
   address1: process.env.NEXT_PUBLIC_INFO_ADDRESS_1 ?? "",
   address2: process.env.NEXT_PUBLIC_INFO_ADDRESS_2 ?? "",
   email: process.env.NEXT_PUBLIC_INFO_EMAIL ?? "",
+  abn: process.env.NEXT_PUBLIC_SELF_ABN ?? "",
 };
 
-export const PDF = {
-  SignatureUrl: process.env.NEXT_PUBLIC_SIGNATURE_URL ?? "",
+export const ASSETS = {
+  signature: process.env.NEXT_PUBLIC_SIGNATURE_URL ?? "",
+  logo: process.env.NEXT_PUBLIC_LOGO_URL ?? "",
+  qrcode: process.env.NEXT_PUBLIC_QRCODE_URL ?? "",
 };
 
 export const RESEND_API = process.env.RESEND_API ?? "";

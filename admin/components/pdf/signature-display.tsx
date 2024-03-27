@@ -1,7 +1,7 @@
 import moment from "moment";
 import { PdfContractData } from "../../pages/view/contract";
 import React from "react";
-import { PDF } from "../../../src/lib/variables";
+import { ASSETS } from "../../../src/lib/variables";
 
 function Signature({
   contract,
@@ -43,12 +43,12 @@ function Signature({
             }}
           >
             {((isClient && contract.signature !== "") ||
-              (!isClient && PDF.SignatureUrl !== "")) && (
+              (!isClient && ASSETS.signature !== "")) && (
                 <>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     alt="Signature"
-                    src={isClient ? contract.signature : PDF.SignatureUrl}
+                    src={isClient ? contract.signature : ASSETS.signature}
                     width="250"
                     height="100"
                   />
